@@ -1,0 +1,130 @@
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local remote = ReplicatedStorage:WaitForChild("AutoKillEvent")
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "ZUN_AUTO_KILL"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.fromOffset(390, 260)
+frame.Position = UDim2.new(0.5, -195, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+frame.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 20)
+corner.Parent = frame
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(200, 0, 20)
+stroke.Thickness = 5
+stroke.Parent = frame
+
+local function makeButton(parent, text, size, pos, color)
+    local b = Instance.new("TextButton")
+    b.Size = size
+    b.Position = pos
+    b.Text = text
+    b.TextColor3 = Color3.fromRGB(255, 0, 20)
+    b.BackgroundColor3 = color
+    b.TextScaled = true
+    b.Font = Enum.Font.GothamBold
+    b.Parent = parent
+    return b
+end
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(0.65, 0, 0, 60)
+title.BackgroundTransparency = 1
+title.Text = "Auto Kill"
+title.TextColor3 = Color3.fromRGB(255, 0, 20)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = frame
+
+local minimize = makeButton(
+    frame, "-", UDim2.fromOffset(48, 42),
+    UDim2.new(1, -108, 0, 9),
+    Color3.fromRGB(255, 180, 190)
+)
+
+local close = makeButton(
+    frame, "X", UDim2.fromOffset(48, 42),
+    UDim2.new(1, -55, 0, 9),
+    Color3.fromRGB(255, 255, 255)
+)
+
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, 0, 0, 35)
+label.Position = UDim2.fromOffset(0, 65)
+label.BackgroundTransparency = 1
+label.Text = "Name Kill"
+label.TextColor3 = Color3.fromRGB(255, 0, 20)
+label.TextScaled = true
+label.Font = Enum.Font.GothamBold
+label.Parent = frame
+
+local input = Instance.new("TextBox")
+input.Size = UDim2.new(0.82, 0, 0, 55)
+input.Position = UDim2.new(0.09, 0, 0, 110)
+input.PlaceholderText = "Enter player name..."
+input.Text = ""
+input.TextColor3 = Color3.new(1, 1, 1)
+input.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+input.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+input.TextScaled = true
+input.Font = Enum.Font.Gotham
+input.Parent = frame
+
+local inputStroke = Instance.new("UIStroke")
+inputStroke.Color = Color3.fromRGB(255, 0, 20)
+inputStroke.Thickness = 3
+inputStroke.Parent = input
+
+local kill = makeButton(
+    frame, "KILL ALL",
+    UDim2.new(0.82, 0, 0, 65),
+    UDim2.new(0.09, 0, 0, 185),
+    Color3.fromRGB(20, 0, 0)
+)
+
+local open = makeButton(
+    gui, "OPEN",
+    UDim2.fromOffset(90, 90),
+    UDim2.new(1, -110, 1, -120),
+    Color3.fromRGB(0, 0, 0)
+)
+open.Visible = false
+
+local openCorner = Instance.new("UICorner")
+openCorner.CornerRadius = UDim.new(1, 0)
+openCorner.Parent = open
+
+local openStroke = Instance.new("UIStroke")
+openStroke.Color = Color3.fromRGB(255, 0, 20)
+openStroke.Thickness = 4
+openStroke.Parent = open
+
+minimize.MouseButton1Click:Connect(function()
+    frame.Visible = false
+    open.Visible = true
+end)
+
+open.MouseButton1Click:Connect(function()
+    frame.Visible = true
+    open.Visible = false
+end)
+
+close.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+kill.MouseButton1Click:Connect(function()
+    remote:FireServer(input.Text)
+end)
